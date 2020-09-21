@@ -3,6 +3,21 @@ from os import listdir
 import json
 from datetime import datetime
 
+def parse_attach(body):
+    result = 'Attachment'
+    if (body.contents[3].contents[0].string):
+        # print('\n', body.contents[3].contents[0].string, '\n')
+        result = body.contents[3].contents[0].string
+    elif (len(body.contents[3].contents[0].contents)):
+        result = '(' + body.contents[3].contents[0].contents[0].contents[1].string + ')'
+        # print('\n', body.contents[3].contents[0], '\n')    
+        if (len(body.contents[3].contents[0].contents[0].contents) > 3):
+            # print('\n', body.contents[3].contents[0].contents[0].contents[3].string, '\n')  
+            result += ' ' + body.contents[3].contents[0].contents[0].contents[3].string
+    else:
+        print(body)    
+    return result
+
 def sortDate(val):
     return val.get(date, 0)
 
@@ -63,7 +78,7 @@ for file in listdir('./decode'):
             sender = split_h[0]
             date = split_h[1]
 
-        message = raw_message.contents[3].string if raw_message.contents[3].string else 'Attachment'
+        message = raw_message.contents[3].string if raw_message.contents[3].string else parse_attach(raw_message)
         # print(sender + ", " + date)
         
         date_arr = date.split(' ')
